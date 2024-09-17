@@ -53,14 +53,14 @@ jobs:
       run: |
         rm -rf $GITHUB_WORKSPACE/site/packages/static-frontend/dist/server
         cp -r $GITHUB_WORKSPACE/data/server $GITHUB_WORKSPACE/site/packages/static-frontend/dist/server
-
+        ls $GITHUB_WORKSPACE/site/packages/static-frontend/dist
     - name: Setup Pages
       uses: actions/configure-pages@v4
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
         # Upload entire repository
-        path: $GITHUB_WORKSPACE/site/packages/static-frontend/dist
+        path: site/packages/static-frontend/dist
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v4
