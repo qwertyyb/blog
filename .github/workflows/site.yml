@@ -52,7 +52,7 @@ jobs:
     - name: update data
       run: |
         rm -rf $GITHUB_WORKSPACE/site/packages/static-frontend/dist/server
-        copy -r $GITHUB_WORKSPACE/data/server $GITHUB_WORKSPACE/site/packages/static-frontend/dist/server
+        cp -r $GITHUB_WORKSPACE/data/server $GITHUB_WORKSPACE/site/packages/static-frontend/dist/server
 
     - name: Setup Pages
       uses: actions/configure-pages@v4
