@@ -24,24 +24,35 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
+    - name: fetch cache
+      uses: actions/cache@v3
+      id: cache
+      with:
+        key: static-site
+        path: $GITHUB_WORKSPACE/dist
     - uses: actions/checkout@v4
+      if: steps.cache.outputs.cache-hit != 'true'
       with:
         repository: qwertyyb/writing
         ref: feature/prosemirror
         path: site
     - uses: pnpm/action-setup@v3
+      if: steps.cache.outputs.cache-hit != 'true'
       with:
         version: 8
     - name: Use Node.js 20.x
+      if: steps.cache.outputs.cache-hit != 'true'
       uses: actions/setup-node@v3
       with:
         node-version: 20.x
     - name: build site
+      if: steps.cache.outputs.cache-hit != 'true'
       run: |
         cd site/packages/static-frontend
         pnpm install
         pnpm run build-only
     - name: move static files
+      if: steps.cache.outputs.cache-hit != 'true'
       run: |
         mv $GITHUB_WORKSPACE/site/packages/static-frontend/dist $GITHUB_WORKSPACE/dist
 
@@ -55,7 +66,7 @@ jobs:
         pnpm run build
     - name: update data
       run: |
-        rm -rf $GITHUB_WORKSPACE/data
+        rm -rf $GITHUB_WORKSPACE/dist/data
         cp -r $GITHUB_WORKSPACE/data/data $GITHUB_WORKSPACE/dist/data
         ls $GITHUB_WORKSPACE/dist
 
