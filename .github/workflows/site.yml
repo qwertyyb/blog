@@ -41,21 +41,24 @@ jobs:
         cd site/packages/static-frontend
         pnpm install
         pnpm run build-only
+    - name: move static files
+      run: |
+        mv $GITHUB_WORKSPACE/site/packages/static-frontend/dist $GITHUB_WORKSPACE/dist
 
     - uses: actions/checkout@v4
       with:
         path: data
-    - name: build data
+    - name: build list
       run: |
         cd $GITHUB_WORKSPACE/data
         pnpm install
         pnpm run build
-
     - name: update data
       run: |
-        rm -rf $GITHUB_WORKSPACE/site/packages/static-frontend/dist/server
-        cp -r $GITHUB_WORKSPACE/data/server $GITHUB_WORKSPACE/site/packages/static-frontend/dist/server
-        ls $GITHUB_WORKSPACE/site/packages/static-frontend/dist
+        rm -rf $GITHUB_WORKSPACE/data
+        cp -r $GITHUB_WORKSPACE/data/data $GITHUB_WORKSPACE/dist/data
+        ls $GITHUB_WORKSPACE/dist
+
     - name: Setup Pages
       uses: actions/configure-pages@v4
     - name: Upload artifact
