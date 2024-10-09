@@ -4,11 +4,6 @@ on:
   push:
     branches: ['main']
   workflow_dispatch:
-    inputs:
-      build_cache:
-        description: 'rebuild cache'
-        default: false
-        type: boolean
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -36,32 +31,32 @@ jobs:
     - uses: pnpm/action-setup@v3
       with:
         version: 8
+    - uses: actions/checkout@v4
+      with:
+        path: data
     - name: fetch cache
-      uses: actions/cache/restore@v4
+      uses: actions/cache@v3
       id: cache
       with:
-        key: static-site
+        key: static-site-{{ hashFiles('data/package.json') }}
         path: dist
     - uses: actions/checkout@v4
-      if: steps.cache.outputs.cache-hit != 'true' || inputs.build_cache == true
+      if: steps.cache.outputs.cache-hit != 'true'
       with:
         repository: qwertyyb/writing
         ref: feature/prosemirror
         path: site
     - name: build site
-      if: steps.cache.outputs.cache-hit != 'true' || inputs.build_cache == true
+      if: steps.cache.outputs.cache-hit != 'true'
       run: |
         cd site/packages/static-frontend
         pnpm install
         pnpm run build-only
     - name: move static files
-      if: steps.cache.outputs.cache-hit != 'true' || inputs.build_cache == true
+      if: steps.cache.outputs.cache-hit != 'true'
       run: |
         mv $GITHUB_WORKSPACE/site/packages/static-frontend/dist $GITHUB_WORKSPACE/dist
 
-    - uses: actions/checkout@v4
-      with:
-        path: data
     - name: build list
       run: |
         cd $GITHUB_WORKSPACE/data
@@ -83,10 +78,4 @@ jobs:
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v4
-    - name: Save Cache
-      uses: actions/cache/save@v4
-      if: steps.cache.outputs.cache-hit != 'true' || inputs.build_cache == true
-      with:
-        key: static-site
-        path: dist
             
