@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       build_cache:
-        description: 'Test scenario tags'
+        description: 'rebuild cache'
         default: false
         type: boolean
 
@@ -87,6 +87,6 @@ jobs:
       uses: actions/cache/save@v4
       if: steps.cache.outputs.cache-hit != 'true' || inputs.build_cache == true
       with:
-        path: path/to/dependencies
-        key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+        key: static-site
+        path: dist
             
