@@ -38,7 +38,7 @@ jobs:
       uses: actions/cache@v3
       id: cache
       with:
-        key: static-site-{{ hashFiles('data/package.json') }}
+        key: static-site-${{ hashFiles('data/package.json') }}
         path: dist
     - uses: actions/checkout@v4
       if: steps.cache.outputs.cache-hit != 'true'
